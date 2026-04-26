@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { TabelaLeituras } from "@/components/tabela-leituras";
 import { SeletorPeriodo } from "@/components/seletor-periodo";
-import { useLeiturasRealtime } from "@/lib/hooks";
+import { useLeiturasPolling } from "@/lib/hooks";
 import {
   PERIODO_HORAS,
   type Dispositivo,
@@ -20,7 +20,7 @@ export function LeiturasCliente({
   dispositivosIniciais,
   leiturasIniciais,
 }: Props) {
-  const leituras = useLeiturasRealtime(leiturasIniciais);
+  const leituras = useLeiturasPolling(leiturasIniciais);
   const [periodo, setPeriodo] = useState<PeriodoFiltro>("24h");
 
   const limiteTimestamp = useMemo(

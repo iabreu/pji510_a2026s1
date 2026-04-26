@@ -5,7 +5,7 @@ import { ListaAlertas } from "@/components/lista-alertas";
 import { SeletorPeriodo } from "@/components/seletor-periodo";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
-import { useAlertasRealtime } from "@/lib/hooks";
+import { useAlertasPolling } from "@/lib/hooks";
 import {
   PERIODO_HORAS,
   TIPO_ALERTA_LABEL,
@@ -24,7 +24,7 @@ export function AlertasCliente({
   dispositivosIniciais,
   alertasIniciais,
 }: Props) {
-  const alertas = useAlertasRealtime(alertasIniciais);
+  const alertas = useAlertasPolling(alertasIniciais);
 
   const [periodo, setPeriodo] = useState<PeriodoFiltro>("24h");
   const [filtroDispositivo, setFiltroDispositivo] = useState<string>("todos");

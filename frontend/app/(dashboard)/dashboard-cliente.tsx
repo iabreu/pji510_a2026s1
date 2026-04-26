@@ -14,8 +14,8 @@ import { ListaAlertas } from "@/components/lista-alertas";
 import { KpiCard } from "@/components/kpi-card";
 import { SeletorPeriodo } from "@/components/seletor-periodo";
 import {
-  useLeiturasRealtime,
-  useAlertasRealtime,
+  useLeiturasPolling,
+  useAlertasPolling,
   useDispositivosPolling,
 } from "@/lib/hooks";
 import {
@@ -38,8 +38,8 @@ export function DashboardCliente({
   alertasIniciais,
 }: Props) {
   const dispositivos = useDispositivosPolling(dispositivosIniciais);
-  const leituras = useLeiturasRealtime(leiturasIniciais);
-  const alertas = useAlertasRealtime(alertasIniciais);
+  const leituras = useLeiturasPolling(leiturasIniciais);
+  const alertas = useAlertasPolling(alertasIniciais);
 
   const [periodo, setPeriodo] = useState<PeriodoFiltro>("24h");
   const [metrica, setMetrica] = useState<"temperatura" | "umidade">(

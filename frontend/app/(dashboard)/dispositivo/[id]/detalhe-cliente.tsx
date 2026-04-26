@@ -18,7 +18,7 @@ import { ListaAlertas } from "@/components/lista-alertas";
 import { ThresholdForm } from "@/components/threshold-form";
 import { KpiCard } from "@/components/kpi-card";
 import { SeletorPeriodo } from "@/components/seletor-periodo";
-import { useLeiturasRealtime, useAlertasRealtime } from "@/lib/hooks";
+import { useLeiturasPolling, useAlertasPolling } from "@/lib/hooks";
 import {
   formatarTemperatura,
   formatarUmidade,
@@ -44,8 +44,8 @@ export function DispositivoDetalheCliente({
   alertasIniciais,
 }: Props) {
   const dispositivo = dispositivoInicial; // dados iniciais bastam pra detalhe
-  const todasLeituras = useLeiturasRealtime(leiturasIniciais);
-  const todosAlertas = useAlertasRealtime(alertasIniciais);
+  const todasLeituras = useLeiturasPolling(leiturasIniciais);
+  const todosAlertas = useAlertasPolling(alertasIniciais);
 
   // Filtrar pelo dispositivo (Realtime traz tudo, precisamos filtrar)
   const leiturasDoDispositivo = useMemo(

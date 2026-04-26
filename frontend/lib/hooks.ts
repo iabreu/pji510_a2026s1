@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Leitura, Alerta, Dispositivo } from "@/lib/types";
 
-/** Inscrição no Realtime do Supabase para acompanhar novas leituras. */
-export function useLeiturasRealtime(iniciais: Leitura[]) {
+export function useLeiturasPolling(iniciais: Leitura[], intervaloMs = 5_000) {
   const [leituras, setLeituras] = useState<Leitura[]>(iniciais);
 
   useEffect(() => {
@@ -14,32 +13,24 @@ export function useLeiturasRealtime(iniciais: Leitura[]) {
 
   useEffect(() => {
     const supabase = createClient();
-    const canal = supabase
-      .channel("leituras-realtime")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "leituras" },
-        (payload) => {
-          setLeituras((atuais) => {
-            const nova = payload.new as Leitura;
-            // Evitar duplicatas (caso o INSERT já tenha vindo na lista inicial)
-            if (atuais.some((l) => l.id === nova.id)) return atuais;
-            return [nova, ...atuais].slice(0, 5000);
-          });
-        },
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(canal);
-    };
-  }, []);
+    const id = setInterval(async () => {
+      const agora = new Date();
+      const inicio = new Date(agora.getTime() - 24 * 60 * 60 * 1000).toISOString();
+      const { data } = await supabase
+        .from("leituras")
+        .select("*")
+        .gte("registrado_em", inicio)
+        .order("registrado_em", { ascending: false })
+        .limit(5000);
+      if (data) setLeituras(data as Leitura[]);
+    }, intervaloMs);
+    return () => clearInterval(id);
+  }, [intervaloMs]);
 
   return leituras;
 }
 
-/** Inscrição no Realtime do Supabase para acompanhar novos alertas. */
-export function useAlertasRealtime(iniciais: Alerta[]) {
+export function useAlertasPolling(iniciais: Alerta[], intervaloMs = 5_000) {
   const [alertas, setAlertas] = useState<Alerta[]>(iniciais);
 
   useEffect(() => {
@@ -48,31 +39,24 @@ export function useAlertasRealtime(iniciais: Alerta[]) {
 
   useEffect(() => {
     const supabase = createClient();
-    const canal = supabase
-      .channel("alertas-realtime")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "alertas" },
-        (payload) => {
-          setAlertas((atuais) => {
-            const novo = payload.new as Alerta;
-            if (atuais.some((a) => a.id === novo.id)) return atuais;
-            return [novo, ...atuais].slice(0, 500);
-          });
-        },
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(canal);
-    };
-  }, []);
+    const id = setInterval(async () => {
+      const agora = new Date();
+      const inicio = new Date(agora.getTime() - 24 * 60 * 60 * 1000).toISOString();
+      const { data } = await supabase
+        .from("alertas")
+        .select("*")
+        .gte("criado_em", inicio)
+        .order("criado_em", { ascending: false })
+        .limit(500);
+      if (data) setAlertas(data as Alerta[]);
+    }, intervaloMs);
+    return () => clearInterval(id);
+  }, [intervaloMs]);
 
   return alertas;
 }
 
-/** Recarrega periodicamente os dispositivos (status online/offline). */
-export function useDispositivosPolling(iniciais: Dispositivo[], intervaloMs = 30_000) {
+export function useDispositivosPolling(iniciais: Dispositivo[], intervaloMs = 5_000) {
   const [dispositivos, setDispositivos] = useState<Dispositivo[]>(iniciais);
 
   useEffect(() => {
