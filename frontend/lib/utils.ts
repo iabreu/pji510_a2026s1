@@ -55,16 +55,16 @@ export function formatarUmidade(v: number | null | undefined): string {
   return `${formatarNumero(v)}%`;
 }
 
-export function gerarCSV<T extends Record<string, string | number | boolean | null | undefined>>(
+export function gerarCSV<T>(
   linhas: T[],
-  colunas: { chave: keyof T; cabecalho: string }[],
+  colunas: { chave: keyof T & string; cabecalho: string }[],
 ): string {
   const cabecalho = colunas.map((c) => c.cabecalho).join(",");
   const corpo = linhas
     .map((linha) =>
       colunas
         .map((c) => {
-          const valor = linha[c.chave];
+          const valor = linha[c.chave as keyof T];
           if (valor === null || valor === undefined) return "";
           const s = String(valor);
           // escapar aspas e vírgulas
