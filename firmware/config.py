@@ -27,7 +27,7 @@ API_KEY = "troque_esta_chave_pelo_valor_real_do_supabase"
 INTERVALO_LEITURA_SEGUNDOS = 30
 
 # Pino digital onde o DHT22 está conectado
-PINO_DHT22 = 15
+PINO_DHT22 = 4
 
 # Timeout de requisições HTTP (segundos)
 TIMEOUT_HTTP_SEGUNDOS = 10
