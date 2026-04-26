@@ -65,6 +65,12 @@ if conectar_wifi():
     sensor = dht.DHT22(Pin(config.PINO_DHT22))
     print("[main] sensor DHT22 no pino {}".format(config.PINO_DHT22))
     print("[main] intervalo: {}s\n".format(config.INTERVALO_LEITURA_SEGUNDOS))
+    print("[main] aguardando sensor estabilizar...")
+    time.sleep(5)
+    try:
+        sensor.measure()
+    except OSError:
+        pass
     time.sleep(2)
     while True:
         temperatura, umidade = ler_sensor(sensor)
