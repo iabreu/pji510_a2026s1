@@ -16,19 +16,34 @@ class ApiError extends Error {
 }
 
 async function fetchJSON<T>(path: string, init?: RequestInit): Promise<T> {
-  const resp = await fetch(`${API_URL}${path}`, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...(init?.headers || {}),
-    },
-    cache: "no-store",
-  });
-  if (!resp.ok) {
-    const texto = await resp.text();
-    throw new ApiError(resp.status, texto || resp.statusText);
+  const maxTentativas = 3;
+  let ultimoErro: Error | null = null;
+
+  for (let tentativa = 0; tentativa < maxTentativas; tentativa++) {
+    try {
+      const resp = await fetch(`${API_URL}${path}`, {
+        ...init,
+        headers: {
+          "Content-Type": "application/json",
+          ...(init?.headers || {}),
+        },
+        cache: "no-store",
+      });
+      if (!resp.ok) {
+        const texto = await resp.text();
+        throw new ApiError(resp.status, texto || resp.statusText);
+      }
+      return resp.json() as Promise<T>;
+    } catch (err) {
+      ultimoErro = err instanceof Error ? err : new Error(String(err));
+      // Só retenta em erros de rede/cold start (não em 4xx)
+      if (err instanceof ApiError && err.status >= 400 && err.status < 500) throw err;
+      if (tentativa < maxTentativas - 1) {
+        await new Promise((r) => setTimeout(r, 1000 * (tentativa + 1)));
+      }
+    }
   }
-  return resp.json() as Promise<T>;
+  throw ultimoErro;
 }
 
 export const api = {
