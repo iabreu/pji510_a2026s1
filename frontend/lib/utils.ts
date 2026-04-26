@@ -55,7 +55,7 @@ export function formatarUmidade(v: number | null | undefined): string {
   return `${formatarNumero(v)}%`;
 }
 
-export function gerarCSV<T extends Record<string, unknown>>(
+export function gerarCSV<T extends Record<string, string | number | boolean | null | undefined>>(
   linhas: T[],
   colunas: { chave: keyof T; cabecalho: string }[],
 ): string {
