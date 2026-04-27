@@ -55,9 +55,9 @@ export default function LoginPage() {
             <Cpu className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <CardTitle className="text-2xl">Monitoramento UNIVESP</CardTitle>
+            <CardTitle className="text-2xl">Sistema de Medição de Temperatura</CardTitle>
             <CardDescription className="mt-1">
-              Projeto Integrador V — entre com sua conta do grupo
+              Entre com sua conta para acessar o painel
             </CardDescription>
           </div>
         </CardHeader>
@@ -99,7 +99,7 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-6 text-center text-xs text-muted-foreground">
-            Acesso restrito aos integrantes do grupo. Não há registro aberto.
+            Acesso restrito. Não há registro aberto.
           </p>
         </CardContent>
       </Card>
