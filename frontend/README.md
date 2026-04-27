@@ -72,7 +72,7 @@ frontend/
 
 - Node.js 18+
 - Backend FastAPI rodando (em `http://localhost:8000`)
-- Banco Supabase configurado com schema e usuários (ver `docs/README.md`)
+- Banco Supabase configurado com schema e usuários (ver `database-schema.sql` na raiz)
 
 ### Setup
 

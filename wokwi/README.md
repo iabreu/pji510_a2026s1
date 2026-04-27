@@ -29,7 +29,7 @@ GPIO4  ──────► SDA (data)
 4. Crie uma nova aba clicando no `+` e adicione `config.py` com o conteúdo do nosso arquivo
 5. Edite `config.py`:
    - `API_BASE_URL` — URL do backend deployado no Vercel
-   - `API_KEY` — a `api_key` do dispositivo no banco (ver `docs/README.md`)
+   - `API_KEY` — a `api_key` do dispositivo no banco (ver `database-schema.sql` na raiz)
 6. Clique em **▶ Start the simulation**
 7. Acompanhe o console — você verá os logs de Wi-Fi, leituras e envios HTTP
 

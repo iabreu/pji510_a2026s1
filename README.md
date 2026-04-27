@@ -4,10 +4,6 @@ Sistema de monitoramento de temperatura e umidade usando ESP32 + sensor DHT22. O
 
 **Equipe:** Ivan, Jairo e Rafael
 
-**Orientadora:** Profa. Krizia Emanuelle dos Santos Ferreira
-
-**Polos:** Artur Nogueira/SP e Itupeva/SP
-
 ## O que o sistema faz
 
 O sistema coleta dados de temperatura e umidade de um sensor DHT22 conectado a um microcontrolador ESP32. Esses dados são enviados para uma API na nuvem e armazenados em um banco de dados. Um painel web (dashboard) exibe os dados em tempo real, com gráficos, tabelas e alertas automáticos quando os valores saem dos limites configurados.
@@ -45,10 +41,8 @@ ESP32 + DHT22          FastAPI               Supabase              Next.js
 ```
 projeto-integrador-v/
 │
-├── docs/                   # SQL do banco de dados
-│   ├── database-schema.sql # Cria tabelas, triggers, view e permissões
-│   ├── database-seed.sql   # Dados de teste (24h de leituras simuladas)
-│   └── README.md           # Instruções de configuração do Supabase
+├── database-schema.sql     # Cria tabelas, triggers, view e permissões
+├── database-seed.sql       # Dados de teste (24h de leituras simuladas)
 │
 ├── backend/                # API em Python (FastAPI)
 │   ├── api/index.py        # Ponto de entrada para o Vercel
@@ -121,8 +115,8 @@ projeto-integrador-v/
 ### Passo 1 — Banco de dados (Supabase)
 
 1. Crie um projeto no [Supabase](https://supabase.com)
-2. No **SQL Editor**, cole e execute o conteúdo de `docs/database-schema.sql`
-3. (Opcional) Execute `docs/database-seed.sql` para ter dados de teste
+2. No **SQL Editor**, cole e execute o conteúdo de `database-schema.sql`
+3. (Opcional) Execute `database-seed.sql` para ter dados de teste
 4. Gere API keys reais para os dispositivos:
    ```sql
    UPDATE dispositivos SET api_key = encode(gen_random_bytes(32), 'hex') WHERE nome = 'ESP32-001' RETURNING api_key;
@@ -189,25 +183,3 @@ Para deploy no Vercel:
 - **Alertas** — Lista de alertas gerados automaticamente quando temperatura ou umidade saem dos limites
 - **Atualização automática** — O dashboard consulta o banco a cada 5 segundos, mostrando dados novos sem precisar recarregar a página
 - **Tema claro/escuro** — Alternável pelo botão no canto superior
-
-## Variáveis de ambiente
-
-### Backend (.env)
-
-| Variável | Descrição |
-|---|---|
-| `SUPABASE_URL` | URL do projeto Supabase |
-| `SUPABASE_SERVICE_ROLE_KEY` | Chave service_role (nunca expor no frontend) |
-| `CORS_ORIGINS` | URLs permitidas, separadas por vírgula |
-
-### Frontend (.env.local)
-
-| Variável | Descrição |
-|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | URL do projeto Supabase |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Chave pública (anon) do Supabase |
-| `NEXT_PUBLIC_API_URL` | URL do backend FastAPI |
-
-## Licença
-
-Projeto acadêmico desenvolvido para a UNIVESP. Uso educacional.
