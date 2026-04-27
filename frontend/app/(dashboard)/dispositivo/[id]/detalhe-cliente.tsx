@@ -47,7 +47,7 @@ export function DispositivoDetalheCliente({
   const todasLeituras = useLeiturasPolling(leiturasIniciais);
   const todosAlertas = useAlertasPolling(alertasIniciais);
 
-  // Filtrar pelo dispositivo (Realtime traz tudo, precisamos filtrar)
+  // Filtrar pelo dispositivo
   const leiturasDoDispositivo = useMemo(
     () => todasLeituras.filter((l) => l.dispositivo_id === dispositivo.id),
     [todasLeituras, dispositivo.id],
@@ -96,7 +96,7 @@ export function DispositivoDetalheCliente({
     };
   }, [leiturasFiltradas]);
 
-  // Última leitura disponível do dispositivo (já vem na view, mas Realtime é mais fresca)
+  // Última leitura disponível do dispositivo
   const ultima = leiturasDoDispositivo[0];
   const tempAtual = ultima?.temperatura ?? dispositivo.ultima_temperatura;
   const umidAtual = ultima?.umidade ?? dispositivo.ultima_umidade;

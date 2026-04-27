@@ -1,4 +1,3 @@
-"""Schemas Pydantic usados nas rotas da API."""
 from datetime import datetime
 from typing import Literal
 from uuid import UUID
@@ -6,12 +5,8 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 
 
-# ============================================================================
-# Leituras
-# ============================================================================
-class LeituraCriar(BaseModel):
-    """Payload enviado pelo ESP32 ao registrar uma leitura."""
 
+class LeituraCriar(BaseModel):
     temperatura: float = Field(..., ge=-50, le=100, description="Temperatura em °C")
     umidade: float = Field(..., ge=0, le=100, description="Umidade relativa em %")
     registrado_em: datetime | None = Field(
@@ -21,8 +16,6 @@ class LeituraCriar(BaseModel):
 
 
 class Leitura(BaseModel):
-    """Leitura como retornada pelo banco."""
-
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
@@ -32,12 +25,8 @@ class Leitura(BaseModel):
     registrado_em: datetime
 
 
-# ============================================================================
-# Dispositivos
-# ============================================================================
-class DispositivoStatus(BaseModel):
-    """Dispositivo com status atual (vem da view vw_dispositivos_status)."""
 
+class DispositivoStatus(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
@@ -58,8 +47,6 @@ class DispositivoStatus(BaseModel):
 
 
 class DispositivoAtualizarLimites(BaseModel):
-    """Payload para atualizar os limites (thresholds) de um dispositivo."""
-
     temperatura_min: float | None = Field(default=None, ge=-50, le=100)
     temperatura_max: float | None = Field(default=None, ge=-50, le=100)
     umidade_min: float | None = Field(default=None, ge=0, le=100)
@@ -67,12 +54,8 @@ class DispositivoAtualizarLimites(BaseModel):
     intervalo_offline_segundos: int | None = Field(default=None, ge=10, le=86400)
 
 
-# ============================================================================
-# Alertas
-# ============================================================================
-class Alerta(BaseModel):
-    """Alerta gerado quando uma leitura sai dos limites."""
 
+class Alerta(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
@@ -87,12 +70,8 @@ class Alerta(BaseModel):
     registrado_em: datetime
 
 
-# ============================================================================
-# Estatísticas
-# ============================================================================
-class Estatisticas(BaseModel):
-    """Estatísticas agregadas de um período."""
 
+class Estatisticas(BaseModel):
     dispositivo_id: UUID
     inicio: datetime
     fim: datetime
@@ -106,9 +85,7 @@ class Estatisticas(BaseModel):
     total_alertas: int = 0
 
 
-# ============================================================================
-# Health
-# ============================================================================
+
 class Health(BaseModel):
     status: Literal["ok", "degraded"]
     versao: str

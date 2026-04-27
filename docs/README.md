@@ -40,7 +40,7 @@ UPDATE dispositivos SET api_key = 'cole_aqui_a_chave_1' WHERE nome = 'ESP32-001'
 UPDATE dispositivos SET api_key = 'cole_aqui_a_chave_2' WHERE nome = 'ESP32-002';
 ```
 
-Anote as chaves — você vai usá-las no `firmware/config.py` de cada placa.
+Anote as chaves — você vai usá-las no `wokwi/config.py` de cada placa.
 
 ### 4. (Opcional) Popular com dados de teste
 

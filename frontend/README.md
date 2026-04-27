@@ -7,7 +7,7 @@ Dashboard web para visualização das leituras dos ESP32, configuração de limi
 - **Next.js 14** (App Router) + **TypeScript**
 - **Tailwind CSS** — estilos
 - **Recharts** — gráficos
-- **Supabase** — banco de dados + autenticação + realtime
+- **Supabase** — banco de dados + autenticação
 - **next-themes** — tema claro/escuro
 - **lucide-react** — ícones
 
@@ -46,7 +46,7 @@ frontend/
 │   └── providers.tsx
 ├── lib/
 │   ├── supabase/{client,server,middleware}.ts
-│   ├── hooks.ts                # Realtime + polling
+│   ├── hooks.ts                # Polling (atualização periódica)
 │   ├── types.ts                # Tipos alinhados com o banco
 │   ├── api.ts                  # Cliente do FastAPI
 │   └── utils.ts                # cn(), formatadores, CSV
@@ -64,7 +64,7 @@ frontend/
 - **Leituras** — Tabela com filtros, paginação e exportação CSV
 - **Alertas** — Timeline com filtros por dispositivo, tipo e período
 - **Tema claro/escuro** com persistência
-- **Atualização ao vivo** via Supabase Realtime — novas leituras aparecem sem reload
+- **Atualização automática** — o dashboard consulta o banco a cada 5 segundos, novas leituras aparecem sem reload
 
 ## Rodar localmente
 
@@ -108,9 +108,9 @@ Depois do deploy, lembre de atualizar `CORS_ORIGINS` no backend para incluir a U
 
 ## Decisões de design
 
-**Server Components + Client Components.** As páginas (`page.tsx`) são Server Components que carregam dados iniciais via `createClient()` do servidor (com cookie de sessão). Esses dados são passados como props para componentes cliente (`*-cliente.tsx`) que assinam Realtime para mantê-los atualizados.
+**Server Components + Client Components.** As páginas (`page.tsx`) são Server Components que carregam dados iniciais via `createClient()` do servidor (com cookie de sessão). Esses dados são passados como props para componentes cliente (`*-cliente.tsx`) que fazem polling a cada 5 segundos para manter os dados atualizados.
 
-**Realtime + dados iniciais.** Cada página pega um snapshot via SQL no Server Component e o frontend assina mudanças via Realtime. Isso é mais eficiente que polling e oferece UX instantânea.
+**Polling.** Cada página pega um snapshot inicial no Server Component. Os componentes cliente consultam o Supabase periodicamente para atualizar os dados na tela sem precisar recarregar a página.
 
 **Sem Radix UI.** Os componentes UI foram escritos com Tailwind puro pra manter o bundle leve e o código simples de defender academicamente. Acessibilidade básica (`aria-label`, focus rings, semântica) está coberta.
 

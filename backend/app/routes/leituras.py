@@ -1,10 +1,10 @@
-"""Rotas de leituras: ingestão (ESP32) e consulta (frontend)."""
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.auth import autenticar_dispositivo
+from app.rate_limit import rate_limit_por_ip
 from app.schemas import Leitura, LeituraCriar
 from app.supabase_client import get_supabase
 
@@ -20,12 +20,8 @@ router = APIRouter(prefix="/leituras", tags=["leituras"])
 async def registrar_leitura(
     payload: LeituraCriar,
     dispositivo: dict = Depends(autenticar_dispositivo),
+    _: None = Depends(rate_limit_por_ip),
 ) -> dict:
-    """Endpoint chamado pelo ESP32 para registrar uma leitura.
-
-    Requer cabeçalho `X-API-Key` válido. O `dispositivo_id` é deduzido
-    automaticamente da API key — o ESP32 não precisa enviá-lo.
-    """
     supabase = get_supabase()
 
     dados = {
@@ -58,7 +54,6 @@ async def listar_leituras(
     fim: datetime | None = Query(default=None, description="Data/hora final (ISO 8601)"),
     limite: int = Query(default=500, ge=1, le=5000),
 ) -> list[dict]:
-    """Lista leituras com filtros opcionais por dispositivo e período."""
     supabase = get_supabase()
     query = supabase.table("leituras").select("*").order("registrado_em", desc=True)
 
@@ -83,7 +78,6 @@ async def listar_leituras_recentes(
     dispositivo_id: UUID | None = Query(default=None),
     horas: int = Query(default=24, ge=1, le=720, description="Janela em horas"),
 ) -> list[dict]:
-    """Atalho para `?inicio=now-Nh`."""
     inicio = datetime.now(timezone.utc) - timedelta(hours=horas)
     supabase = get_supabase()
     query = (

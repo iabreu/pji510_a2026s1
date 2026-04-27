@@ -1,4 +1,3 @@
-"""Rotas de alertas: listagem com filtros."""
 from datetime import datetime, timedelta, timezone
 from typing import Literal
 from uuid import UUID

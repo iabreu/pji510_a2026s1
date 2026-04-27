@@ -67,7 +67,7 @@ projeto-integrador-v/
 │   ├── vercel.json         # Configuração de deploy no Vercel
 │   └── .env.example        # Modelo de variáveis de ambiente
 │
-├── firmware/               # Código do ESP32 (MicroPython)
+├── wokwi/               # Código do ESP32 (MicroPython)
 │   ├── main.py             # Loop principal (lê sensor, envia dados)
 │   ├── boot.py             # Inicialização do ESP32
 │   ├── config.py           # Configurações (WiFi, URL da API, API key)
@@ -98,7 +98,7 @@ projeto-integrador-v/
 | Tecnologia | Para que usamos |
 |---|---|
 | **ESP32 + DHT22** | Microcontrolador e sensor de temperatura/umidade |
-| **MicroPython** | Linguagem de programação do firmware do ESP32 |
+| **MicroPython** | Linguagem de programação do ESP32 |
 | **Wokwi** | Simulador online do circuito (não usamos hardware físico) |
 | **FastAPI** | Framework Python para criar a API do backend |
 | **Supabase** | Banco de dados PostgreSQL na nuvem, com autenticação |
@@ -170,10 +170,10 @@ Para deploy no Vercel:
 4. Faça o deploy
 5. Depois do deploy, atualize `CORS_ORIGINS` no backend para incluir a URL do frontend
 
-### Passo 4 — Firmware (ESP32 no Wokwi)
+### Passo 4 — ESP32 no Wokwi
 
 1. Acesse [wokwi.com](https://wokwi.com) e crie um novo projeto **ESP32 MicroPython**
-2. Copie os arquivos da pasta `firmware/` para o projeto:
+2. Copie os arquivos da pasta `wokwi/` para o projeto:
    - `main.py`, `boot.py`, `config.py`, `diagram.json`
 3. No `config.py` do Wokwi, configure:
    - `API_BASE_URL` com a URL do backend no Vercel

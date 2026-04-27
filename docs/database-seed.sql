@@ -1,15 +1,9 @@
--- ============================================================================
--- Projeto Integrador V - UNIVESP
 -- Seed: dados de teste para desenvolvimento do frontend
--- ============================================================================
--- Gera 24 horas de leituras (uma a cada 5 minutos) para cada dispositivo ativo,
--- com curva de temperatura realista (mais frio de madrugada, mais quente à tarde)
--- e alguns spikes fora dos limites para popular a tabela de alertas.
 --
--- Como executar:
---   1. Execute database-schema.sql primeiro
---   2. Cole este arquivo no SQL Editor do Supabase e execute
--- ============================================================================
+-- Gera 24 horas de leituras (uma a cada 5 minutos) para cada dispositivo ativo,
+-- com curva de temperatura realista e alguns spikes fora dos limites para popular alertas.
+--
+-- Pré-requisito: execute database-schema.sql primeiro.
 
 -- Limpar leituras existentes (CASCADE remove alertas associados também)
 TRUNCATE leituras CASCADE;
@@ -29,16 +23,15 @@ BEGIN
         WHILE v_timestamp <= NOW() LOOP
             v_hora_do_dia := EXTRACT(HOUR FROM v_timestamp);
 
-            -- Curva diária de temperatura: pico ~18h, mínimo ~6h
-            -- Base de 22°C +/- 6°C com ruído aleatório de +/- 1°C
+            -- Curva diária: pico ~18h, mínimo ~6h, base 22°C +/- 6°C, ruído +/- 1°C
             v_temperatura := 22 + 6 * SIN((v_hora_do_dia - 6) * PI() / 12)
                                 + (RANDOM() - 0.5) * 2;
 
-            -- Umidade: oscila entre ~50% e ~75%, anti-correlacionada com temperatura
+            -- Umidade: ~50-75%, anti-correlacionada com temperatura
             v_umidade     := 60 + 10 * SIN((v_hora_do_dia - 18) * PI() / 12)
                                 + (RANDOM() - 0.5) * 5;
 
-            -- ~2% das leituras: spike de temperatura para gerar alertas de demonstração
+            -- ~2% das leituras: spike de temperatura para gerar alertas
             IF RANDOM() < 0.02 THEN
                 v_temperatura := v_temperatura + 8;
             END IF;
@@ -59,9 +52,7 @@ BEGIN
     END LOOP;
 END $$;
 
--- ============================================================================
--- Verificação: resumo das leituras geradas por dispositivo
--- ============================================================================
+-- Resumo das leituras geradas
 SELECT
     d.nome,
     d.localizacao,
@@ -77,9 +68,7 @@ LEFT JOIN leituras l ON l.dispositivo_id = d.id
 GROUP BY d.id, d.nome, d.localizacao
 ORDER BY d.nome;
 
--- ============================================================================
--- Verificação: alertas gerados (pelo trigger fn_gerar_alertas)
--- ============================================================================
+-- Alertas gerados pelo trigger
 SELECT
     d.nome,
     a.tipo,

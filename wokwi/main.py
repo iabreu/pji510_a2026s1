@@ -29,8 +29,6 @@ def conectar_wifi():
 def ler_sensor(sensor):
     try:
         sensor.measure()
-        time.sleep(1)
-        sensor.measure()
         return sensor.temperature(), sensor.humidity()
     except OSError as e:
         print("[sensor] erro: {}".format(e))

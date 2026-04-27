@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   ThermometerSun,
   ThermometerSnowflake,
@@ -40,7 +41,10 @@ interface ListaAlertasProps {
 }
 
 export function ListaAlertas({ alertas, dispositivos }: ListaAlertasProps) {
-  const dispositivoMap = Object.fromEntries(dispositivos.map((d) => [d.id, d]));
+  const dispositivoMap = useMemo(
+    () => Object.fromEntries(dispositivos.map((d) => [d.id, d])),
+    [dispositivos],
+  );
 
   if (alertas.length === 0) {
     return (

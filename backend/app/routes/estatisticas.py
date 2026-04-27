@@ -1,4 +1,3 @@
-"""Rotas de estatísticas: agregações por dispositivo e período."""
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
@@ -19,7 +18,6 @@ async def estatisticas_dispositivo(
     dispositivo_id: UUID,
     horas: int = Query(default=24, ge=1, le=720, description="Janela em horas"),
 ) -> Estatisticas:
-    """Calcula min/max/média de temperatura e umidade + total de leituras e alertas."""
     inicio = datetime.now(timezone.utc) - timedelta(hours=horas)
     fim = datetime.now(timezone.utc)
 

@@ -1,7 +1,3 @@
--- ============================================================================
--- Projeto Integrador V - UNIVESP
--- Sistema de Monitoramento de Temperatura e Umidade
--- ============================================================================
 -- Schema do banco de dados (Supabase / PostgreSQL)
 --
 -- Como executar:
@@ -9,7 +5,6 @@
 --   2. Cole este arquivo inteiro e execute
 --   3. (Opcional) Execute database-seed.sql para popular com dados de teste
 --   4. Veja docs/README.md para o passo a passo completo
--- ============================================================================
 
 -- Limpar objetos existentes (idempotente para re-execução durante desenvolvimento)
 DROP VIEW  IF EXISTS vw_dispositivos_status CASCADE;
@@ -17,10 +12,9 @@ DROP TABLE IF EXISTS alertas               CASCADE;
 DROP TABLE IF EXISTS leituras              CASCADE;
 DROP TABLE IF EXISTS dispositivos          CASCADE;
 
--- ============================================================================
--- TABELA: dispositivos
--- Cadastro dos ESP32 que enviam leituras
--- ============================================================================
+--
+-- dispositivos
+--
 CREATE TABLE dispositivos (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nome            TEXT NOT NULL,
@@ -52,10 +46,9 @@ COMMENT ON COLUMN dispositivos.api_key  IS 'Chave de autenticação usada pelo E
 COMMENT ON COLUMN dispositivos.intervalo_offline_segundos
                                         IS 'Tempo sem leitura para o dispositivo ser considerado offline';
 
--- ============================================================================
--- TABELA: leituras
--- Histórico de todas as leituras enviadas pelos dispositivos
--- ============================================================================
+--
+-- leituras
+--
 CREATE TABLE leituras (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     dispositivo_id  UUID NOT NULL REFERENCES dispositivos(id) ON DELETE CASCADE,
@@ -72,10 +65,9 @@ CREATE INDEX idx_leituras_data             ON leituras(registrado_em DESC);
 
 COMMENT ON TABLE leituras IS 'Histórico de leituras de temperatura e umidade';
 
--- ============================================================================
--- TABELA: alertas
--- Eventos gerados automaticamente quando uma leitura sai dos limites
--- ============================================================================
+--
+-- alertas
+--
 CREATE TABLE alertas (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     dispositivo_id  UUID NOT NULL REFERENCES dispositivos(id) ON DELETE CASCADE,
@@ -95,9 +87,9 @@ CREATE INDEX idx_alertas_tipo             ON alertas(tipo);
 
 COMMENT ON TABLE alertas IS 'Eventos disparados quando uma leitura viola os limites configurados';
 
--- ============================================================================
--- TRIGGER: gerar alertas automaticamente ao inserir leitura fora dos limites
--- ============================================================================
+--
+-- Trigger: gerar alertas ao inserir leitura fora dos limites
+--
 CREATE OR REPLACE FUNCTION fn_gerar_alertas() RETURNS TRIGGER AS $$
 DECLARE
     v_dispositivo dispositivos%ROWTYPE;
@@ -137,9 +129,9 @@ CREATE TRIGGER trg_leituras_gerar_alertas
     FOR EACH ROW
     EXECUTE FUNCTION fn_gerar_alertas();
 
--- ============================================================================
--- TRIGGER: atualizar campo `atualizado_em` em dispositivos
--- ============================================================================
+--
+-- Trigger: atualizar campo atualizado_em
+--
 CREATE OR REPLACE FUNCTION fn_atualizar_timestamp() RETURNS TRIGGER AS $$
 BEGIN
     NEW.atualizado_em = NOW();
@@ -152,9 +144,9 @@ CREATE TRIGGER trg_dispositivos_atualizado_em
     FOR EACH ROW
     EXECUTE FUNCTION fn_atualizar_timestamp();
 
--- ============================================================================
--- VIEW: status atual dos dispositivos (última leitura + online/offline)
--- ============================================================================
+--
+-- View: status atual dos dispositivos (última leitura + online/offline)
+--
 CREATE OR REPLACE VIEW vw_dispositivos_status AS
 SELECT
     d.id,
@@ -188,15 +180,11 @@ LEFT JOIN LATERAL (
 
 COMMENT ON VIEW vw_dispositivos_status IS 'Status atual de cada dispositivo, com a última leitura e o status online/offline calculado';
 
--- ============================================================================
--- ROW LEVEL SECURITY (RLS)
--- ============================================================================
--- Estratégia:
---   - Backend FastAPI usa service_role key (bypassa RLS) para gravar leituras
---   - Frontend Next.js usa anon key + sessão de usuário autenticado para ler
---   - Apenas usuários autenticados conseguem ler dados
---   - Apenas usuários autenticados conseguem alterar limites (thresholds)
--- ============================================================================
+--
+-- Row Level Security (RLS)
+--
+-- Backend FastAPI usa service_role key (bypassa RLS) para gravar leituras.
+-- Frontend Next.js usa anon key + sessão de usuário autenticado para ler.
 
 ALTER TABLE dispositivos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE leituras     ENABLE ROW LEVEL SECURITY;
@@ -226,9 +214,9 @@ CREATE POLICY "alertas_select_authenticated"
     TO authenticated
     USING (TRUE);
 
--- ============================================================================
--- REALTIME: habilitar publicação para o frontend escutar mudanças
--- ============================================================================
+--
+-- Realtime
+--
 -- Após DROP TABLE no início, as entradas são removidas da publicação,
 -- então podemos adicionar com segurança.
 
@@ -236,9 +224,9 @@ ALTER PUBLICATION supabase_realtime ADD TABLE leituras;
 ALTER PUBLICATION supabase_realtime ADD TABLE alertas;
 ALTER PUBLICATION supabase_realtime ADD TABLE dispositivos;
 
--- ============================================================================
--- DADOS INICIAIS: cadastrar os dispositivos do projeto
--- ============================================================================
+--
+-- Dados iniciais: dispositivos do projeto
+--
 -- IMPORTANTE: substitua as api_keys por valores aleatórios em produção.
 -- Gere com: SELECT encode(gen_random_bytes(32), 'hex');
 
@@ -252,7 +240,3 @@ VALUES
     ('ESP32-002', 'Itupeva, SP',
      'troque_esta_chave_itupeva',
      18.0, 30.0, 30.0, 70.0);
-
--- ============================================================================
--- FIM DO SCHEMA
--- ============================================================================

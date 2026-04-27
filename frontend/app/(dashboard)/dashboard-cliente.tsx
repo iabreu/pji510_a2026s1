@@ -109,8 +109,8 @@ export function DashboardCliente({
         />
         <KpiCard
           titulo="Atualização"
-          valor="ao vivo"
-          descricao="via Supabase Realtime"
+          valor="automática"
+          descricao="atualiza a cada 5s"
           icone={Wifi}
           tom="success"
         />

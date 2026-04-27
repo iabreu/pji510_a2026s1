@@ -1,4 +1,3 @@
-"""Aplicação FastAPI principal: monta routers e configura CORS."""
 from datetime import datetime, timezone
 
 from fastapi import FastAPI
@@ -24,8 +23,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PATCH", "OPTIONS"],
+    allow_headers=["Content-Type", "X-API-Key", "Authorization"],
 )
 
 

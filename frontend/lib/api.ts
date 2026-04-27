@@ -1,9 +1,3 @@
-// Wrapper para chamadas ao backend FastAPI.
-// Como o frontend já usa Supabase para leituras (via Realtime e queries diretas),
-// só usamos o backend para operações que dependem de service_role ou para o
-// PATCH de limites (que poderia ir direto via RLS authenticated, mas centralizamos
-// aqui para manter a lógica do FastAPI como fonte de verdade).
-
 import type { Estatisticas, Dispositivo } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";

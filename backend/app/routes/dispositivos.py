@@ -1,4 +1,3 @@
-"""Rotas de dispositivos: listar, detalhar e atualizar limites."""
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status
@@ -15,7 +14,6 @@ router = APIRouter(prefix="/dispositivos", tags=["dispositivos"])
     summary="Listar todos os dispositivos com status atual",
 )
 async def listar_dispositivos() -> list[dict]:
-    """Retorna todos os dispositivos ativos via view `vw_dispositivos_status`."""
     supabase = get_supabase()
     resposta = (
         supabase.table("vw_dispositivos_status")
@@ -58,7 +56,6 @@ async def atualizar_limites(
     dispositivo_id: UUID,
     payload: DispositivoAtualizarLimites,
 ) -> dict:
-    """Atualiza apenas os campos enviados (PATCH parcial)."""
     dados = payload.model_dump(exclude_none=True)
     if not dados:
         raise HTTPException(
@@ -66,7 +63,29 @@ async def atualizar_limites(
             detail="Nenhum campo enviado para atualizar",
         )
 
+    # Validar que min < max quando ambos são informados
     supabase = get_supabase()
+    atual = (
+        supabase.table("dispositivos")
+        .select("temperatura_min, temperatura_max, umidade_min, umidade_max")
+        .eq("id", str(dispositivo_id))
+        .limit(1)
+        .execute()
+    )
+    if not atual.data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Dispositivo não encontrado")
+
+    merged = {**atual.data[0], **dados}
+    if merged["temperatura_min"] >= merged["temperatura_max"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="temperatura_min deve ser menor que temperatura_max",
+        )
+    if merged["umidade_min"] >= merged["umidade_max"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="umidade_min deve ser menor que umidade_max",
+        )
     resposta = (
         supabase.table("dispositivos")
         .update(dados)

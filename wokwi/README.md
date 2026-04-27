@@ -1,4 +1,4 @@
-# Firmware — ESP32 + DHT22 (MicroPython)
+# Wokwi — ESP32 + DHT22 (MicroPython)
 
 Código que roda no ESP32 simulado no [Wokwi](https://wokwi.com). Lê temperatura e umidade do DHT22 a cada 30 segundos e envia para o backend FastAPI via HTTP POST.
 
@@ -9,8 +9,7 @@ Código que roda no ESP32 simulado no [Wokwi](https://wokwi.com). Lê temperatur
 | `boot.py`      | Executado uma vez ao ligar (mínimo, só inicialização) |
 | `main.py`      | Loop principal: Wi-Fi → sensor → envio HTTP |
 | `config.py`    | Credenciais, URL do backend, pino do DHT22 |
-| `diagram.json` | Circuito do Wokwi (ESP32 + DHT22 ligados no GPIO15) |
-| `wokwi.toml`   | Configuração do firmware MicroPython usado pelo simulador |
+| `diagram.json` | Circuito do Wokwi (ESP32 + DHT22 ligados no GPIO4) |
 
 ## Circuito
 
@@ -19,7 +18,7 @@ ESP32          DHT22
 ─────          ─────
 3V3   ───────► VCC
 GND   ───────► GND
-GPIO15 ──────► SDA (data)
+GPIO4  ──────► SDA (data)
 ```
 
 ## Como rodar no Wokwi
@@ -44,7 +43,7 @@ Se preferir editar localmente e simular via terminal, instale a [wokwi-cli](http
 
 ```bash
 npm install -g @wokwi/cli
-cd firmware/
+cd wokwi/
 wokwi-cli .
 ```
 
@@ -79,4 +78,4 @@ A `API_KEY` em `config.py` não bate com nenhuma `dispositivos.api_key` no Supab
 O payload está malformado. Confira que `temperatura` e `umidade` são números (não strings).
 
 **Console mudo**
-O `boot.py` chama `esp.osdebug(None)` para silenciar logs do firmware. As mensagens nossas (com `print`) continuam aparecendo.
+Verifique se o `diagram.json` inclui as conexões do `$serialMonitor` e se o DHT22 está no circuito.
