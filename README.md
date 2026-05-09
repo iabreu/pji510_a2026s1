@@ -4,6 +4,23 @@ Sistema de monitoramento de temperatura e umidade usando ESP32 + sensor DHT22. O
 
 **Equipe:** Ivan Alexandre de Abreu filho - RA 2208014
 
+## Acesso para teste
+
+O dashboard está disponível em: **https://pji510-a2026s1.vercel.app/** _(substituir pela URL real do deploy)_
+
+Para entrar e testar, use a conta de avaliação abaixo:
+
+| Campo  | Valor                    |
+| ------ | ------------------------ |
+| E-mail | `teste@aluno.univesp.br` |
+| Senha  | `univesp`                |
+
+Passos:
+
+1. Acesse o link acima.
+2. Na tela de login, informe o e-mail e a senha.
+3. Você será redirecionado para a visão geral, com KPIs, cards de dispositivos, gráfico de temperatura/umidade e a lista dos últimos alertas.
+
 ## O que o sistema faz
 
 O sistema coleta dados de temperatura e umidade de um sensor DHT22 conectado a um microcontrolador ESP32. Esses dados são enviados para uma API na nuvem e armazenados em um banco de dados. Um painel web (dashboard) exibe os dados em tempo real, com gráficos, tabelas e alertas automáticos quando os valores saem dos limites configurados.
@@ -89,18 +106,18 @@ projeto-integrador-v/
 
 ## Tecnologias usadas
 
-| Tecnologia | Para que usamos |
-|---|---|
-| **ESP32 + DHT22** | Microcontrolador e sensor de temperatura/umidade |
-| **MicroPython** | Linguagem de programação do ESP32 |
-| **Wokwi** | Simulador online do circuito (não usamos hardware físico) |
-| **FastAPI** | Framework Python para criar a API do backend |
-| **Supabase** | Banco de dados PostgreSQL na nuvem, com autenticação |
-| **Next.js 14** | Framework React para o frontend (dashboard) |
-| **TypeScript** | Linguagem do frontend (JavaScript com tipagem) |
-| **Tailwind CSS** | Estilização das páginas |
-| **Recharts** | Gráficos de temperatura e umidade |
-| **Vercel** | Hospedagem do backend e do frontend |
+| Tecnologia        | Para que usamos                                           |
+| ----------------- | --------------------------------------------------------- |
+| **ESP32 + DHT22** | Microcontrolador e sensor de temperatura/umidade          |
+| **MicroPython**   | Linguagem de programação do ESP32                         |
+| **Wokwi**         | Simulador online do circuito (não usamos hardware físico) |
+| **FastAPI**       | Framework Python para criar a API do backend              |
+| **Supabase**      | Banco de dados PostgreSQL na nuvem, com autenticação      |
+| **Next.js 14**    | Framework React para o frontend (dashboard)               |
+| **TypeScript**    | Linguagem do frontend (JavaScript com tipagem)            |
+| **Tailwind CSS**  | Estilização das páginas                                   |
+| **Recharts**      | Gráficos de temperatura e umidade                         |
+| **Vercel**        | Hospedagem do backend e do frontend                       |
 
 ## Como rodar o projeto
 
@@ -129,10 +146,10 @@ projeto-integrador-v/
 
 Para facilitar a avaliação do projeto, há um usuário de teste pré-definido:
 
-| Campo | Valor |
-|---|---|
+| Campo  | Valor                    |
+| ------ | ------------------------ |
 | E-mail | `teste@aluno.univesp.br` |
-| Senha | `univesp` |
+| Senha  | `univesp`                |
 
 Para criá-lo, execute o SQL abaixo no **SQL Editor** do Supabase (uma vez só):
 
@@ -173,6 +190,7 @@ uvicorn app.main:app --reload
 ```
 
 Para deploy no Vercel:
+
 1. Conecte o repositório no [Vercel](https://vercel.com)
 2. Crie um projeto com **Root Directory** = `backend`
 3. Adicione as variáveis de ambiente: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `CORS_ORIGINS`
@@ -191,6 +209,7 @@ npm run dev
 ```
 
 Para deploy no Vercel:
+
 1. Crie outro projeto no Vercel (mesmo repositório)
 2. **Root Directory** = `frontend`
 3. Adicione as variáveis: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_API_URL`
