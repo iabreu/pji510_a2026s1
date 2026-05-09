@@ -2,7 +2,7 @@
 
 Sistema de monitoramento de temperatura e umidade usando ESP32 + sensor DHT22. O projeto foi desenvolvido como trabalho de conclusão do Projeto Integrador em Computação V da UNIVESP (Universidade Virtual do Estado de São Paulo).
 
-**Equipe:** Ivan, Jairo e Rafael
+**Equipe:** Ivan Alexandre de Abreu filho - RA 2208014
 
 ## O que o sistema faz
 
