@@ -122,8 +122,41 @@ projeto-integrador-v/
    UPDATE dispositivos SET api_key = encode(gen_random_bytes(32), 'hex') WHERE nome = 'ESP32-001' RETURNING api_key;
    UPDATE dispositivos SET api_key = encode(gen_random_bytes(32), 'hex') WHERE nome = 'ESP32-002' RETURNING api_key;
    ```
-5. Em **Authentication > Users**, crie as contas dos integrantes do grupo
+5. Em **Authentication > Users**, crie as contas dos integrantes do grupo (ou use o usuário de teste descrito em "Acesso ao dashboard")
 6. Anote a **URL do projeto**, a **anon key** e a **service_role key** (em Project Settings > API)
+
+### Acesso ao dashboard (usuário de teste)
+
+Para facilitar a avaliação do projeto, há um usuário de teste pré-definido:
+
+| Campo | Valor |
+|---|---|
+| E-mail | `teste@aluno.univesp.br` |
+| Senha | `univesp` |
+
+Para criá-lo, execute o SQL abaixo no **SQL Editor** do Supabase (uma vez só):
+
+```sql
+INSERT INTO auth.users (
+    instance_id, id, aud, role, email,
+    encrypted_password, email_confirmed_at,
+    raw_app_meta_data, raw_user_meta_data,
+    created_at, updated_at,
+    confirmation_token, email_change, email_change_token_new, recovery_token
+) VALUES (
+    '00000000-0000-0000-0000-000000000000',
+    gen_random_uuid(),
+    'authenticated',
+    'authenticated',
+    'teste@aluno.univesp.br',
+    crypt('univesp', gen_salt('bf')),
+    NOW(),
+    '{"provider":"email","providers":["email"]}',
+    '{}',
+    NOW(), NOW(),
+    '', '', '', ''
+);
+```
 
 ### Passo 2 — Backend (FastAPI)
 
